@@ -1,10 +1,6 @@
 pipeline {
-<<<<<<< HEAD
     agent { label 'agent3' }
 
-=======
-    agent any
->>>>>>> c42f3da650cfa0dde975df7a044bf986365ae67c
     stages {
         stage('Checkout') {
             steps {
