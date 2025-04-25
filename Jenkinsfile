@@ -11,10 +11,10 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    // Ejecutar el entorno virtual en Windows
+                    // Cambiar la ruta de creación del entorno virtual
                     bat '''
-                    python -m venv venv
-                    venv\\Scripts\\activate
+                    python -m venv C:\\path\\to\\venv
+                    C:\\path\\to\\venv\\Scripts\\activate
                     pip install -r requirements.txt
                     pytest
                     '''
