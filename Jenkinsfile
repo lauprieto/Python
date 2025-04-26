@@ -2,9 +2,16 @@ pipeline {
     agent { label 'agent1' }
 
     stages {
+
         stage('Checkout') {
             steps {
                 git 'https://github.com/lauprieto/Python.git'
+            }
+        }
+
+        stage('Verificar archivo') {
+            steps {
+                sh 'ls -la'
             }
         }
 
