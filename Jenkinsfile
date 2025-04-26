@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        docker { image 'python:3.10' }
-    }
+    agent { label 'agent1' }
 
     stages {
         stage('Checkout') {
@@ -12,13 +10,21 @@ pipeline {
 
         stage('Instalar dependencias') {
             steps {
-                sh 'pip install -r requirements.txt'
+                sh '''
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
+                '''
             }
         }
 
         stage('Test') {
             steps {
-                sh 'pytest --junitxml=report.xml'
+                sh '''
+                    . venv/bin/activate
+                    pytest --junitxml=report.xml
+                '''
             }
             post {
                 always {
