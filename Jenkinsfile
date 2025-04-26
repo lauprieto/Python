@@ -2,35 +2,48 @@ pipeline {
     agent { label 'agent1' }
 
     stages {
-        stage('Clonar repositorio') {
+        stage('Checkout') {
             steps {
                 git 'https://github.com/lauprieto/Python.git'
             }
         }
 
-        stage('Instalar dependencias') {
+        stage('Setup Python') {
             steps {
-                sh 'python3 -m venv venv'
-                sh './venv/bin/pip install -r requirements.txt || true'
+                script {
+                    // Verificar si Python3 y pip3 están instalados
+                    sh '''
+                        command -v python3 || echo "Python3 no está instalado"
+                        command -v pip3 || echo "pip3 no está instalado"
+                        command -v python3-venv || echo "python3-venv no está instalado"
+                    '''
+                }
             }
         }
 
-        stage('Ejecutar script') {
+        stage('Test') {
             steps {
-                sh './venv/bin/python main.py'
-            }
-        }
-
-        stage('Pruebas') {
-            steps {
-                sh './venv/bin/python -m unittest discover -s test'
+                script {
+                    // Crear un entorno virtual, activarlo e instalar dependencias
+                    sh '''
+                        python3 -m venv venv
+                        source venv/bin/activate
+                        pip install -r requirements.txt
+                        pytest
+                    '''
+                }
             }
         }
     }
-
     post {
         always {
-            echo 'Pipeline finalizado.'
+            echo 'Pipeline terminado.'
+        }
+        success {
+            echo '¡El pipeline fue exitoso!'
+        }
+        failure {
+            echo 'Hubo un error en el pipeline.'
         }
     }
 }
