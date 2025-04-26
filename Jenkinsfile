@@ -2,41 +2,16 @@ pipeline {
     agent { label 'agent1' }
 
     stages {
-        stage('Checkout') {
+        stage('Descargar código') {
             steps {
                 git 'https://github.com/lauprieto/Python.git'
             }
         }
 
-        stage('Verificar archivos') {
+        stage('Ejecutar pruebas') {
             steps {
-                sh 'ls -la'  // Listar todos los archivos del directorio
-            }
-        }
-
-        stage('Instalar dependencias') {
-            steps {
-                sh '''
-                    python3 -m venv venv
-                    . venv/bin/activate
-                    pip install --upgrade pip
-                    cd python1
-                    pip install -r requirements.txt
-                '''
-            }
-        }
-
-        stage('Test') {
-            steps {
-                sh '''
-                    . venv/bin/activate
-                    pytest --junitxml=report.xml
-                '''
-            }
-            post {
-                always {
-                    junit 'report.xml'
-                }
+                sh 'pip install -r requirements.txt || echo "No se encontraron dependencias para instalar"'
+                sh 'python3 -m unittest discover tests'
             }
         }
     }
