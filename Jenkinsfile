@@ -9,9 +9,9 @@ pipeline {
         }
         stage('Test') {
             steps {
-                bat '''
-                python -m venv venv
-                call venv\\Scripts\\activate
+                sh '''
+                python3 -m venv venv
+                source venv/bin/activate
                 pip install -r requirements.txt
                 pytest
                 '''
