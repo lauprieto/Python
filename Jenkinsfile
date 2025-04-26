@@ -1,27 +1,28 @@
 pipeline {
-    agent { label 'agent1' }
+    agent any
 
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/lauprieto/Java.git'
+                git 'https://github.com/lauprieto/Python.git'
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Instalar dependencias') {
             steps {
-                sh 'python -m venv venv'
+                sh 'python3 -m venv venv'
+                sh '. venv/bin/activate && pip install --upgrade pip'
                 sh '. venv/bin/activate && pip install -r requirements.txt'
             }
         }
 
-        stage('Test') {
+        stage('Ejecutar pruebas') {
             steps {
-                sh '. venv/bin/activate && pytest'
+                sh '. venv/bin/activate && pytest --junitxml=report.xml'
             }
             post {
                 always {
-                    junit '**/tests/test_*.xml'
+                    junit 'report.xml'
                 }
             }
         }
